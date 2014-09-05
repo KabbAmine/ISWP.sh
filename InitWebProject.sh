@@ -3,7 +3,7 @@
 #######################################################################
 # Author: Kabbaj Amine
 # Date Creation: 2014-05-22
-# Last modification: 2014-05-28
+# Last modification: 2014-09-05
 
 # DESCRIPTION
 # Initialize what needed for my web projects in a new tmux
@@ -62,12 +62,12 @@ checkProjectName() {
 	fi
 }
 checkBinaries() {
-	if [ ! -x $1 ]
+	if [ -x $1 ] || [ -L $1 ]
 	then
+		echo -e $1 $yellow"was found"$white
+	else
 		echo -e $1 $red"was not found"$white &&
 		kill -SIGINT $$
-	else
-		echo -e $1 $yellow"was found"$white
 	fi
 }
 createRootFolderIfNot () {
@@ -76,7 +76,7 @@ createRootFolderIfNot () {
 		echo -e $yellow"The project name is"$white $project_name $green"(New project)\n"$white
 		mkdir $1
 	else
-		echo -e $yellow"The project name is"$white $project_name $green"(Existent project)\n"$white
+		echo -e "\n"$yellow"The project name is"$white $project_name $green"(Existent project)\n"$white
 	fi
 }
 startLampp () {
@@ -101,15 +101,15 @@ executeBrolink () {
 
 showTitle "CHECKING"
 
-# Verification of the root folder.
-checkProjectName $project_name
-createRootFolderIfNot $root
-
 # Verification of the binaries.
 for file in $lammp $compass $brolink;
 do
 	checkBinaries $file
 done &&
+
+# Verification of the root folder.
+checkProjectName $project_name
+createRootFolderIfNot $root &&
 
 
 #####################
